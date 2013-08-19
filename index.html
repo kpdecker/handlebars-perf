@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="bower_components/rickshaw/rickshaw.css">
+  <link type="text/css" rel="stylesheet" href="graph.css">
+</head>
+<body>
+  <script id="graph-template" type="x-handlebars-template">
+    <h2>{{caption}}</h2>
+    <div id="{{name}}-graph"></div>
+    <div id="{{name}}-legend"></div>
+  </script>
+
+  <script type="text/javascript">
+    var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"dc8na2hxrj29i.cloudfront.net/code/keen-2.1.0-min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
+
+    Keen.configure({
+      projectId: '52012c293843316943000002',
+      readKey: '7b73ba76d821ff11ad92be6ffc2c031daff88bd12fe580dd02c9bc52aec2c70c1156e74a662788dce1cc33a77fb4a30c953d0032f962318a6774d13531d320249fccb43796eba71d914c31a694067677b48951cbc14848aea43e6d64c105e00954569ff5101257563843dacc77bc2505'
+    });
+  </script>
+  <script src="bower_components/rickshaw/vendor/d3.v2.js"></script>
+  <script src="bower_components/rickshaw/rickshaw.js"></script>
+  <script src="bower_components/handlebars/handlebars.js"></script>
+  <script src="graph.js"></script>
+
+  <script>
+    Keen.onChartsReady(function() {
+      var mySeries = new Keen.Series("distSize", {
+          analysisType: "extraction"
+      });
+      mySeries.getResponse(function(data) {
+        Graph.sizeGraph('Full Distribution Size', [
+          Graph.generateData(data, 'handlebars', 'steelblue'),
+          Graph.generateData(data, 'handlebars_min', '#c05020')
+        ], data);
+
+        Graph.sizeGraph('Runtime Size', [
+          Graph.generateData(data, 'handlebars_runtime', 'steelblue'),
+          Graph.generateData(data, 'handlebars_runtime_min', '#c05020')
+        ], data);
+      });
+
+      var mySeries = new Keen.Series("precompileSize", {
+          analysisType: "extraction"
+      });
+      mySeries.getResponse(function(data) {
+        var series = _.chain(data.result[0])
+              .keys()
+              .without('tag', 'keen', 'sha')
+              .filter(function(key) { return !/knownOnly_/.test(key); })
+              .map(function(key) { return Graph.generateData(data, key); })
+              .value();
+
+        Graph.sizeGraph('Precompiled Template Size', series, data);
+      });
+
+      var mySeries = new Keen.Series("benchmark", {
+          analysisType: "extraction"
+      });
+      mySeries.getResponse(function(data) {
+        var series = _.chain(data.result[0])
+              .keys()
+              .without('tag', 'keen', 'sha')
+              .map(function(key) { return Graph.generateData(data, key); })
+              .value();
+        Graph.throughputGraph('Branchmarks', series, data);
+      });
+    });
+  </script>
+</body>
+</html>
