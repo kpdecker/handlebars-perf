@@ -64,7 +64,7 @@
               .without('tag', 'keen', 'sha')
               .map(function(key) { return Graph.generateData(data, key); })
               .value();
-        Graph.throughputGraph('Branchmarks', series, data);
+        Graph.throughputGraph('Benchmarks', series, data);
       });
     });
   </script>
