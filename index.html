@@ -26,22 +26,24 @@
 
   <script>
     Keen.onChartsReady(function() {
-      var mySeries = new Keen.Series("distSize", {
+      var mySeries = new Keen.Series("dist-size", {
           analysisType: "extraction"
       });
       mySeries.getResponse(function(data) {
         Graph.sizeGraph('Full Distribution Size', [
           Graph.generateData(data, 'handlebars', 'steelblue'),
-          Graph.generateData(data, 'handlebars_min', '#c05020')
+          Graph.generateData(data, 'handlebars_min', '#c05020'),
+          Graph.generateData(data, 'handlebars_min_gz', '#30c020')
         ], data);
 
         Graph.sizeGraph('Runtime Size', [
           Graph.generateData(data, 'handlebars_runtime', 'steelblue'),
-          Graph.generateData(data, 'handlebars_runtime_min', '#c05020')
+          Graph.generateData(data, 'handlebars_runtime_min', '#c05020'),
+          Graph.generateData(data, 'handlebars_runtime_min_gz', '#30c020')
         ], data);
       });
 
-      var mySeries = new Keen.Series("precompileSize", {
+      var mySeries = new Keen.Series("precompile-size", {
           analysisType: "extraction"
       });
       mySeries.getResponse(function(data) {
@@ -55,7 +57,7 @@
         Graph.sizeGraph('Precompiled Template Size', series, data);
       });
 
-      var mySeries = new Keen.Series("benchmark", {
+      var mySeries = new Keen.Series("throughput", {
           analysisType: "extraction"
       });
       mySeries.getResponse(function(data) {
